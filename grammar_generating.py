@@ -34,9 +34,16 @@ class GrammarGen():
             function_declaration = ""
             # Iterate trough lines
             for line in grammar:
+                # Split the line into "words" and remove comments
+                array = []
+                for word in line.split():
+                    if word != "///":
+                        array.append(word)
+                    else:
+                        break
                 # See if we need to delcare a new function
-                if not self.common_data(["///", ":", "|", ";"], line.split()):
-                    this_function_name = line.strip("\n")
+                if not self.common_data([":", "|", ";"], array):
+                    this_function_name = array[0]
                     function_declaration += "%sdepth_counter = 0" % (self.tab)
                     # Define a function
                     function_declaration += "\n%sdef %s(self):" % (self.tab, this_function_name)
@@ -46,10 +53,8 @@ class GrammarGen():
                         function_declaration += "\n%sprint(self.depth_counter)" % (self.tab * 2)
                     # Declare an empty test case
                     function_declaration += "\n%stest_case = \"\"" % (self.tab * 2)
-                # If line is not a comment
-                elif not self.common_data(["///"], line.split()):
-                    # Split the line into "words"
-                    array = line.split()
+                # If line is not empty after removing comments
+                elif array != []:
                     # If it's not the end of the function
                     if not self.common_data([";"], array):
                         # If the line contains more elements, it has less probability to be generated
