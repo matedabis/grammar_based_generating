@@ -7,6 +7,7 @@ import random
 # Local packages
 import templates # Code templates
 import arg_parser # Argument parser
+from arg_parser import _constants # Constant and default values
 
 # Class for generating grammar based generator
 class GrammarGen():
@@ -92,4 +93,5 @@ if __name__ == '__main__':
     with open(gram.file_to_write, "w") as file:
         # STARTER_FUNCTION defines which element of the grammar we want ot generate
         file.write("%s" % templates.class_template.format(GENERATED_FUNCTIONS = gram.generate(args.q),
-        STARTER_FUNCTION = args.starter_element, TEST_COUNT = args.test_count, SEED = args.seed))
+        STARTER_FUNCTION = args.starter_element, TEST_COUNT = args.test_count, SEED = args.seed,
+        TEST_CASES_IN_A_FILE = _constants.test_cases_in_a_file))

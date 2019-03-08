@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import argparse
+import os
 
 # Default values and constants
 class _constants:
@@ -8,6 +9,8 @@ class _constants:
     default_seed = 9999         # Default seed for random
     max = (1 << 53) - 1         # The max value of random number (See also Number.MAX_SAFE_INTEGER)
     min = - 1 * max             # The min value of random number (See also Number.MIN_SAFE_INTEGER)
+    test_cases_in_a_file = 700  # Number of test cases in a test file
+    generated_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "generated")
 
 # Argument parser
 def parse_args():
