@@ -12,8 +12,11 @@ from arg_parser import _constants # Constant and default values
 # Class for generating grammar based generator
 class GrammarGen():
     file_to_write = os.path.join(os.path.dirname(__file__), "generator.py") # The generator to be generated
-    grammar_file = os.path.join(os.path.dirname(__file__), "bin_grammar.g4") # Grammar file to generate generator
+    grammar_file = os.path.join(os.path.dirname(__file__), "singleExpression.g4") # Grammar file to generate generator
     tab = " " * 4 # To show tabs as spaces in generated python script
+    special_keys = ["'('", "')'", "'++'", "'--'", "'+'", "'-'", "'~'", "'!'", "'*'", "'/'", "'%'", "'<<'", "'>>'",
+    "'>>>'", "'<'", "'>'", "'>='", "'<='", "'=='", "'!='", "'==='", "'!=='", "'&'", "'|'", "'^'", "'&&'", "'||'",
+    "'null'", "'undefined'", "'true'", "'false'"]
 
     # Check if 2 arrays has a common element (utility function)
     def common_data(self, list1, list2):
@@ -33,8 +36,13 @@ class GrammarGen():
         # Open grammar file
         with open (self.grammar_file, "r") as grammar:
             function_declaration = ""
+            if not quiet:
+                linecount = 0
             # Iterate trough lines
             for line in grammar:
+                if not quiet:
+                    linecount += 1
+                    print(linecount)
                 # Split the line into "words" and remove comments
                 array = []
                 for word in line.split():
@@ -43,9 +51,9 @@ class GrammarGen():
                     else:
                         break
                 # See if we need to delcare a new function
-                if not self.common_data([":", "|", ";"], array):
+                if not self.common_data([":", "|", ";"], array) and array != []:
                     this_function_name = array[0]
-                    function_declaration += "%sdepth_counter = 0" % (self.tab)
+                    function_declaration += "\n%sdepth_counter = 0" % (self.tab)
                     # Define a function
                     function_declaration += "\n%sdef %s(self):" % (self.tab, this_function_name)
                     # Debug information
@@ -61,12 +69,12 @@ class GrammarGen():
                         # If the line contains more elements, it has less probability to be generated
                         # (to avoid reaching maximum recursion depth)
                         function_declaration += "\n%sif not random.randint(0, %d):\n%stest_case = \"\"" % (self.tab * 2,
-                        len(array), self.tab * 3)
+                        (len(array) - 1) ** 4, self.tab * 3)
                     # Iterate trough "words"
                     for element in array:
                         if element not in ["|", ":", ";"]:
                             # If element is one of these, it needs to be added to the test case
-                            if element in ["'('", "')'"]:
+                            if element in self.special_keys:
                                 # If there is an or, we need one more tab
                                 function_declaration += "\n%stest_case += %s" % (self.tab * 3, element)
                             # Else (if it is a function)

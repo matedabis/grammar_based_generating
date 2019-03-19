@@ -20,7 +20,7 @@ class TestGenerator():
 
     def number(self):
         num = random.randint(_constants.min, _constants.max)
-        return str(num)
+        return "(" + str(num) + ")"
 
     def operator(self):
         operator_array = ["+", "-", "*", "/", "%", "|", "&", "^"]
